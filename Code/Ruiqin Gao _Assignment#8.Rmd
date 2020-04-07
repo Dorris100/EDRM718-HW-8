@@ -1,0 +1,68 @@
+---
+title: "Ruiqin Gao EDRM718 Assignment8"
+output:
+  html_document:
+    df_print: paged
+Date: 04/05/2020
+---
+*This Notebook is about Assignment8.
+#1 
+This function should include the following arguments:
+*data 
+*a numeric vector indicating which items to be reverse scored
+* a number indicating the totla scale point
+```{r}
+scale<-function(the_data, scale_point,vector_num){
+as.matrix(the_data) 
+the_data[,vector_num]<-(scale_point+1)-the_data[,vector_num]
+#Add the sum of each row as a new variable
+total<-rowSums(the_data)
+the_data$sum<-total
+return(the_data)
+}
+```
+
+```{r echo=TRUE}
+#2 Let''s read into the data and call function
+library(here)
+survey<-read.csv(here("Data", "scale.csv"))
+survey
+#call the function
+survey_data<-scale(survey,6, c(2,3,4))
+survey_data
+
+```
+
+```{r echo=TRUE}
+#3
+library(tidyverse)
+hsb<-read.csv(here("Data", "hsb2.csv"))
+hsb
+hsb$female<-factor(hsb$female,
+                   labels=c("male","female"),
+                   ordered= TRUE)
+#create the plotting environment
+ggplot(data = hsb) +
+geom_point(mapping = aes(x = math, y = science, color = female))+
+geom_smooth(mapping = aes(x = math, y = science, color = female))+
+ggtitle("Relationship between math and science by gender") 
+```
+
+```{r echo=TRUE}
+#4 Let's facet on gender
+ggplot(data = hsb) +
+  geom_point(mapping = aes(x = math, y = science)) +
+  labs(x="Math score", y="Science score",
+       title="Relationship between math and science by gender")+
+  facet_wrap(~ female)
+```
+
+```{r}
+#5 we will use geom-boxplot to see how students' mean math score differ by gender.
+#geom_boxplot can be used for two continous variables.
+ggplot(data = hsb,aes(x=female, y=math))+
+geom_boxplot(color="red")+
+ggtitle("Boxplot of mean math score by gender")
+
+```
+
